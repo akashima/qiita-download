@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import os
 import sys
 import json
 import urllib.request
@@ -9,12 +10,14 @@ import urllib.parse
 apiUrl = ''
 apiKey = ''
 teamName = ''
-api = '/api/v2/items?per_page=100'
+api = '/api/v2/items?per_page=100&page='
+page = 0
 
 def argmentscheck():
     global apiUrl
     global apiKey
     global teamName
+    global page
 
     if len(sys.argv) == 2:
         apiKey = sys.argv[1]
@@ -28,9 +31,15 @@ def argmentscheck():
     else :
         print('引数の数が何かおかしいです')
 
+def getMarkdownDownload(createDay, markdownUrl, title):
+    directoryArray = createDay.split('-')
+    createPath = "./" + directoryArray[0] + "/" + directoryArray[1]
+    if not(os.path.exists(createPath)):
+        os.makedirs(createPath)
+
 def main():
     headers = {"Authorization" : "Bearer " + apiKey}
-    requestUrl = apiUrl + api
+    requestUrl = apiUrl + api + str(page)
     request = urllib.request.Request(requestUrl, None, headers)
     response = urllib.request.urlopen(request)
     jsonRaw = response.read().decode('utf-8')
@@ -38,7 +47,8 @@ def main():
     jsons = json.loads(jsonRaw)
 
     for oneWrote in jsons:
-        print(oneWrote['title'])
+        getMarkdownDownload(oneWrote['created_at'], oneWrote['url'], oneWrote['title'])
+
 
 if __name__ == '__main__':
     argmentscheck()
