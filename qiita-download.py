@@ -3,6 +3,7 @@
 
 import os
 import sys
+import re
 import json
 import urllib.request
 import urllib.parse
@@ -25,9 +26,6 @@ def argmentscheck():
     apiKey = ''
     teamName = ''
     api = '/api/v2/items?per_page=100'
-    pageApi = '&page='
-    pageCount = 0
-    maxCount = 0
 
     if len(sys.argv) == 2:
         apiKey = sys.argv[1]
@@ -80,9 +78,35 @@ def getPerPageJsonDownload():
 def fileWriting(createDay, markdown, title):
     markdownTitle = title.replace('/', ' ') + '.md'
     directoryArray = createDay.split('-')
-    createPath = "./" + directoryArray[0] + "/" + directoryArray[1] + "/" + markdownTitle
 
-    writeFile = open(createPath, 'w')
+    createPath = "./" + directoryArray[0] + "/" + directoryArray[1] + "/" + "file/"
+    filePath = "./" + directoryArray[0] + "/" + directoryArray[1] + "/" + markdownTitle
+
+    if not(os.path.exists(createPath)):
+        os.makedirs(createPath)
+
+    pattern = r"https://qiita.com[a-zA-Z0-9/-].*\.png|https://qiita.com[a-zA-Z0-9/-].*\.jpg|https://.qiita.com[a-zA-Z0-9/-].*\.jpeg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.png|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpeg"
+    if len(teamName):
+        pattern = r"https\:\/\/" + teamName + ".qiita.com" + "[a-zA-Z0-9/-].*\.png|https\:\/\/" + teamName + ".qiita.com" + "[a-zA-Z0-9/-].*\.jpg|https\:\/\/" + teamName + ".qiita.com" + "[a-zA-Z0-9/-].*\.jpeg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.png|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpeg"
+
+    matchedList = re.findall(pattern, markdown)
+    headers = {"Authorization" : "Bearer " + apiKey}
+
+    for oneImage in matchedList:
+        url = oneImage.split(" ")[0].split(")")[0]
+        request = urllib.request.Request(url)
+
+        if (re.search(r"qiita.com", url)):
+            request = urllib.request.Request(url, None, headers)
+
+        response = urllib.request.urlopen(request)
+        fileName = url.split('/')[-1]
+        writeFile = open(createPath + fileName, 'wb')
+        writeFile.write(response.read())
+        writeFile.close()
+        markdown = markdown.replace(url, "./file/" + fileName)
+
+    writeFile = open(filePath, 'w')
     writeFile.write(markdown)
     writeFile.close()
 
