@@ -79,7 +79,7 @@ def fileWriting(createDay, markdown, title):
     markdownTitle = title.replace('/', ' ') + '.md'
     directoryArray = createDay.split('-')
 
-    createPath = "./" + directoryArray[0] + "/" + directoryArray[1] + "/" + "file/"
+    createPath = "./" + directoryArray[0] + "/" + directoryArray[1] + "/" + "files/"
     filePath = "./" + directoryArray[0] + "/" + directoryArray[1] + "/" + markdownTitle
 
     if not(os.path.exists(createPath)):
@@ -104,7 +104,7 @@ def fileWriting(createDay, markdown, title):
         writeFile = open(createPath + fileName, 'wb')
         writeFile.write(response.read())
         writeFile.close()
-        markdown = markdown.replace(url, "./file/" + fileName)
+        markdown = markdown.replace(url, createPath + fileName)
 
     writeFile = open(filePath, 'w')
     writeFile.write(markdown)
