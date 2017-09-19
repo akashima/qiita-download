@@ -85,9 +85,10 @@ def fileWriting(createDay, markdown, title):
     if not(os.path.exists(createPath)):
         os.makedirs(createPath)
 
-    pattern = r"https://qiita.com[a-zA-Z0-9/-].*\.png|https://qiita.com[a-zA-Z0-9/-].*\.jpg|https://.qiita.com[a-zA-Z0-9/-].*\.jpeg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.png|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpeg"
+    pattern = r"https://qiita.com[a-zA-Z0-9/-].*\.(?:png|jpg|jpeg)"
+    pattern += r"|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.(?:png|jpg|jpeg)"
     if len(teamName):
-        pattern = r"https\:\/\/" + teamName + ".qiita.com" + "[a-zA-Z0-9/-].*\.png|https\:\/\/" + teamName + ".qiita.com" + "[a-zA-Z0-9/-].*\.jpg|https\:\/\/" + teamName + ".qiita.com" + "[a-zA-Z0-9/-].*\.jpeg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.png|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpg|https://qiita-image-store.s3.amazonaws.com[a-zA-Z0-9/-].*\.jpeg"
+        pattern += r"|https://" + teamName + r".qiita.com[a-zA-Z0-9/-].*\.(?:png|jpg|jpeg)"
 
     matchedList = re.findall(pattern, markdown)
     headers = {"Authorization" : "Bearer " + apiKey}
