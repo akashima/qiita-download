@@ -4,10 +4,19 @@
 https://qiita.com/settings/applications  
   
 あとは以下の通りコマンドを叩けばOKです。  
-  
+
+■ QiitaからWebスクレイピングする
+
 ```
-python3 qiita-download {アクセストークン} yumemi
+python3 qiita-download {アクセストークン}
 ```
+
+■ Qiita:Teamからwebスクレイピングする
+
+```
+python3 qiita-download {アクセストークン} {TeamName}
+```
+
 
 ## 事前準備
    

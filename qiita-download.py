@@ -56,7 +56,7 @@ def getPerPageJsonDownload():
 
     if pageCount:
         requestUrl = url + api + pageApi + str(pageCount)
-
+    print(requestUrl)
     request = urllib.request.Request(requestUrl, None, headers)
     response = urllib.request.urlopen(request)
     responseHeader = str(response.info())
@@ -75,7 +75,7 @@ def getPerPageJsonDownload():
     json.dumps(jsonRaw, ensure_ascii=False)
     return jsonRaw
 
-def fileWriting(createDay, markdown, title):
+def fileWriting(createDay, markdown, title, author):
     markdownTitle = title.replace('/', ' ') + '.md'
     directoryArray = createDay.split('-')
 
@@ -107,7 +107,8 @@ def fileWriting(createDay, markdown, title):
         writeFile.close()
         markdown = markdown.replace(url, createPath + fileName)
 
-    writeFile = open(filePath, 'w')
+    writeFile = open(filePath, 'a')
+    writeFile.write('寄稿者ID:' + author + '\n\n')
     writeFile.write(markdown)
     writeFile.close()
 
@@ -120,7 +121,7 @@ def main():
         pageCount += 1
         for oneWrote in jsons:
             createDirectory(oneWrote['created_at'], oneWrote['url'])
-            fileWriting(oneWrote['created_at'], oneWrote['body'], oneWrote['title'] )
+            fileWriting(oneWrote['created_at'], oneWrote['body'], oneWrote['title'], oneWrote['user']['id'] )
         jsonRaw = getPerPageJsonDownload()
         jsons = json.loads(jsonRaw)
 
