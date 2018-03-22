@@ -107,7 +107,7 @@ def fileWriting(createDay, markdown, title, author):
         writeFile.close()
         markdown = markdown.replace(url, createPath + fileName)
 
-    writeFile = open(filePath, 'a')
+    writeFile = open(filePath, 'w')
     writeFile.write('寄稿者ID:' + author + '\n\n')
     writeFile.write(markdown)
     writeFile.close()
